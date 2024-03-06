@@ -375,32 +375,76 @@ function group(array, keySelector, valueSelector) {
  */
 
 const cssSelectorBuilder = {
-  element(/* value */) {
-    throw new Error('Not implemented');
+  result: '',
+
+  element(value) {
+    const cssObj = Object.create(cssSelectorBuilder);
+    cssObj.propID = 1;
+    cssObj.result = `${this.result}${value}`;
+    this.validate(cssObj.propID);
+    return cssObj;
   },
 
-  id(/* value */) {
-    throw new Error('Not implemented');
+  id(value) {
+    const cssObj = Object.create(cssSelectorBuilder);
+    cssObj.propID = 2;
+    cssObj.result = `${this.result}#${value}`;
+    this.validate(cssObj.propID);
+    return cssObj;
   },
 
-  class(/* value */) {
-    throw new Error('Not implemented');
+  class(value) {
+    const cssObj = Object.create(cssSelectorBuilder);
+    cssObj.propID = 3;
+    cssObj.result = `${this.result}.${value}`;
+    this.validate(cssObj.propID);
+    return cssObj;
   },
 
-  attr(/* value */) {
-    throw new Error('Not implemented');
+  attr(value) {
+    const cssObj = Object.create(cssSelectorBuilder);
+    cssObj.propID = 4;
+    cssObj.result = `${this.result}[${value}]`;
+    this.validate(cssObj.propID);
+    return cssObj;
   },
 
-  pseudoClass(/* value */) {
-    throw new Error('Not implemented');
+  pseudoClass(value) {
+    const cssObj = Object.create(cssSelectorBuilder);
+    cssObj.propID = 5;
+    cssObj.result = `${this.result}:${value}`;
+    this.validate(cssObj.propID);
+    return cssObj;
   },
 
-  pseudoElement(/* value */) {
-    throw new Error('Not implemented');
+  pseudoElement(value) {
+    const cssObj = Object.create(cssSelectorBuilder);
+    cssObj.propID = 6;
+    cssObj.result = `${this.result}::${value}`;
+    this.validate(cssObj.propID);
+    return cssObj;
   },
 
-  combine(/* selector1, combinator, selector2 */) {
-    throw new Error('Not implemented');
+  combine(selector1, combinator, selector2) {
+    const cssObj = Object.create(cssSelectorBuilder);
+    cssObj.result = `${selector1.result} ${combinator} ${selector2.result}`;
+    return cssObj;
+  },
+  stringify() {
+    return this.result;
+  },
+
+  validate(propID) {
+    if (this.propID === propID && [1, 2, 6].includes(propID)) {
+      throw new Error(
+        'Element, id and pseudo-element should not occur more then one time inside the selector'
+      );
+    }
+    if (this.propID > propID) {
+      throw new Error(
+        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element'
+      );
+    }
   },
 };
 
