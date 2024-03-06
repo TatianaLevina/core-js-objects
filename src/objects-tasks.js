@@ -18,7 +18,8 @@
  *    shallowCopy({}) => {}
  */
 function shallowCopy(obj) {
-  return Object.assign({}, obj);
+  const copy = Object.assign({}, obj);
+  return copy;
 }
 
 /**
@@ -35,13 +36,13 @@ function shallowCopy(obj) {
 function mergeObjects(objects) {
   const result = {};
   objects.forEach((object) => {
-    for (let [key, value] of Object.entries(object)) {
+    Object.entries(object).forEach(([key, value]) => {
       if (result[key]) {
         result[key] += value;
       } else {
         result[key] = value;
       }
-    }
+    });
   });
   return result;
 }
